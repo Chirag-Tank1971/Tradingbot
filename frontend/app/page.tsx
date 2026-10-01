@@ -37,11 +37,14 @@ const initialForm = {
   price: "",
 };
 
+import TradingChart, { ChartMarker } from "./components/TradingChart";
+
 export default function TradingPage() {
   const [form, setForm] = useState(initialForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<OrderResult | null>(null);
+  const [chartMarkers, setChartMarkers] = useState<ChartMarker[]>([]);
 
   const requestPreview = useMemo(
     () => [
@@ -82,6 +85,17 @@ export default function TradingPage() {
       }
 
       setResult(data.order);
+      const nowSec = Math.floor(Date.now() / 1000);
+      setChartMarkers((prev) => [
+        ...prev,
+        {
+          time: nowSec,
+          position: form.side === "BUY" ? "belowBar" : "aboveBar",
+          color: form.side === "BUY" ? "#0c9b6d" : "#d94a4a",
+          shape: form.side === "BUY" ? "arrowUp" : "arrowDown",
+          text: `${form.side} ${data.order?.executed_qty || form.quantity}`,
+        },
+      ]);
     } catch (requestError) {
       const message =
         requestError instanceof Error ? requestError.message : "Request failed.";
@@ -93,19 +107,31 @@ export default function TradingPage() {
 
   return (
     <main className="dashboardShell">
-      <section className="dashboardFrame">
+      <section className="dashboardFrame wideFrame">
         <header className="dashboardHeader">
           <div>
             <p className="eyebrow">Binance Futures Testnet</p>
-            <h1>Order Ticket</h1>
+            <h1>Terminal & Order Ticket</h1>
           </div>
           <nav className="topNav" aria-label="Primary navigation">
             <Link className="active" href="/">
               Order Ticket
             </Link>
+            <Link href="/bot">Automated Bot</Link>
+            <Link href="/backtest">Backtesting</Link>
             <Link href="/dashboard">Dashboard</Link>
           </nav>
         </header>
+
+        {/* Live Candlestick Chart */}
+        <section style={{ padding: "0 28px 24px" }}>
+          <TradingChart
+            symbol={form.symbol}
+            onSymbolChange={(sym) => setForm((curr) => ({ ...curr, symbol: sym }))}
+            markers={chartMarkers}
+            height={380}
+          />
+        </section>
 
         <section className="orderWorkspace" aria-label="Trading workspace">
           <section className="dataPanel orderPanel" aria-labelledby="ticket-title">

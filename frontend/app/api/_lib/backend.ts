@@ -13,7 +13,7 @@ export async function forwardToBackend<T>(
   endpoint: string,
   payload: unknown,
 ): Promise<BridgeResponse<T>> {
-  const backendUrl = process.env.BACKEND_API_URL;
+  const backendUrl = process.env.BACKEND_API_URL || "http://127.0.0.1:8000";
 
   if (backendUrl) {
     return callHttpBackend<T>(backendUrl, endpoint, payload);
@@ -21,6 +21,42 @@ export async function forwardToBackend<T>(
 
   const scriptName = endpoint === "/api/dashboard" ? "api_dashboard.py" : "api_order.py";
   return runPythonBridge<T>(scriptName, payload);
+}
+
+export async function forwardGetToBackend<T>(
+  endpoint: string,
+  queryParams?: Record<string, string | number>,
+): Promise<BridgeResponse<T>> {
+  const backendUrl = process.env.BACKEND_API_URL || "http://127.0.0.1:8000";
+  try {
+    const url = new URL(`${backendUrl.replace(/\/$/, "")}${endpoint}`);
+    if (queryParams) {
+      Object.entries(queryParams).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) {
+          url.searchParams.set(k, String(v));
+        }
+      });
+    }
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.detail || data.error || "Backend request failed.",
+      } as BridgeResponse<T>;
+    }
+
+    return data as BridgeResponse<T>;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Backend request failed.";
+    return { success: false, error: message } as BridgeResponse<T>;
+  }
 }
 
 async function callHttpBackend<T>(

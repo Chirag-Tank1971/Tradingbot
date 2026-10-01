@@ -165,6 +165,8 @@ export default function DashboardPage() {
           </div>
           <nav className="topNav" aria-label="Primary navigation">
             <Link href="/">Order Ticket</Link>
+            <Link href="/bot">Automated Bot</Link>
+            <Link href="/backtest">Backtesting</Link>
             <Link className="active" href="/dashboard">
               Dashboard
             </Link>
