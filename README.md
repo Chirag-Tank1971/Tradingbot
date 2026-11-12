@@ -5,7 +5,6 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16.2+-black.svg)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2+-61dafb.svg)](https://react.dev/)
 [![Binance Futures](https://img.shields.io/badge/Binance-Futures_Testnet-F0B90B.svg)](https://testnet.binancefuture.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 An institutional-grade, full-stack quantitative trading platform and automated bot suite for **Binance USDT-M Futures**. Features an autonomous strategy runner, simulated paper trading engine, bar-by-bar historical backtester with quantitative risk metrics (Sharpe ratio, Sortino ratio, Max Drawdown), and interactive TradingView candlestick charts.
 
@@ -134,7 +133,7 @@ graph TB
 
 ## Quantitative Risk & Performance Formulas
 
-All quantitative calculations are implemented in pure Python in [`bot/indicators.py`](file:///d:/Personal/TradingBot/backend/bot/indicators.py):
+All quantitative calculations are implemented in pure Python in [`backend/bot/indicators.py`](backend/bot/indicators.py):
 
 ### 1. Annualized Sharpe Ratio
 $$\text{Sharpe Ratio} = \frac{\mathbb{E}[R_p - R_f]}{\sigma(R_p - R_f)} \times \sqrt{N}$$
@@ -183,7 +182,7 @@ TradingBot/
 │   ├── cli.py                   # Command-line interface for placing orders
 │   ├── requirements.txt         # Python dependencies
 │   ├── server.py                # FastAPI HTTP REST API
-│   └── venv/                    # Local Python virtual environment
+│   └── .env.example             # Backend environment template
 ├── frontend/
 │   ├── app/
 │   │   ├── api/                 # Next.js API forwarding routes
@@ -226,6 +225,14 @@ Open a terminal and navigate to the backend directory:
 cd backend
 ```
 
+Create a virtual environment and install dependencies (first time only):
+
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
 Create and populate your `.env` file (optional if using Paper Trading):
 
 ```powershell
@@ -239,10 +246,9 @@ BINANCE_BASE_URL=https://testnet.binancefuture.com
 FRONTEND_ORIGIN=http://localhost:3000
 ```
 
-Start the FastAPI backend:
+Start the FastAPI backend (with the virtual environment activated):
 
 ```powershell
-.\venv\Scripts\Activate.ps1
 uvicorn server:app --reload --host 0.0.0.0 --port 8000
 ```
 
@@ -328,5 +334,3 @@ This project demonstrates proficiency across the full spectrum of software engin
 2. **Quantitative Risk Modeling**: Implemented pure-Python vector math for Sharpe and Sortino ratios, maximum peak-to-trough drawdowns, and Wilder's smoothed RSI.
 3. **High-Frequency Visualization**: Integrated TradingView Lightweight Charts in React 19 with dynamic volume histograms, execution markers, and responsive canvas scaling.
 4. **Risk-Aware Order Execution**: Designed bracket orders with Stop-Loss and Take-Profit intra-candle simulation, slippage estimation, and fee accounting.
-#   T r a d i n g b o t  
- 
