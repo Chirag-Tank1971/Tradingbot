@@ -328,3 +328,5 @@ This project demonstrates proficiency across the full spectrum of software engin
 2. **Quantitative Risk Modeling**: Implemented pure-Python vector math for Sharpe and Sortino ratios, maximum peak-to-trough drawdowns, and Wilder's smoothed RSI.
 3. **High-Frequency Visualization**: Integrated TradingView Lightweight Charts in React 19 with dynamic volume histograms, execution markers, and responsive canvas scaling.
 4. **Risk-Aware Order Execution**: Designed bracket orders with Stop-Loss and Take-Profit intra-candle simulation, slippage estimation, and fee accounting.
+#   T r a d i n g b o t  
+ 
